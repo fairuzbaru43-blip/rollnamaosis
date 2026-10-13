@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rolling Nama Acak</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header class="judul">
+      <h1>🎲 Rolling Nama Acak</h1>
+      <p>Satu putaran, satu giliran untuk setiap peserta.</p>
+    </header>
+
+    <section class="kartu utama" aria-live="polite">
+      <div class="statistik">
+        <div class="stat"><span id="jumlahTersisa" class="angka">19</span><span class="label">Tersisa</span></div>
+        <div class="stat"><span id="jumlahTerpilih" class="angka">0</span><span class="label">Terpilih</span></div>
+      </div>
+
+      <div class="layar" id="layar">
+        <div id="hasil" class="hasil">Siap Rolling?</div>
+      </div>
+
+      <p id="pesan" class="pesan">Tekan tombol untuk memilih satu nama.</p>
+
+      <div class="tombol-grup">
+        <button id="btnRolling" class="btn btn-utama" type="button">🎲 ROLLING SEKARANG</button>
+        <button id="btnReset" class="btn btn-reset" type="button">🔄 RESET SEMUA</button>
+      </div>
+    </section>
+
+    <div class="dua-kolom">
+      <section class="kartu">
+        <h2>👥 Peserta Belum Terpilih <span id="badgeTersisa" class="badge">19</span></h2>
+        <ul id="daftarTersedia" class="daftar"></ul>
+      </section>
+
+      <section class="kartu">
+        <h2>🏆 Riwayat Nama Terpilih <span id="badgeRiwayat" class="badge">0</span></h2>
+        <ol id="daftarRiwayat" class="daftar"></ol>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

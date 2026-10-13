@@ -1,0 +1,73 @@
+:root{
+  --navy:#0a1128; --navy2:#13204a; --ungu:#7c3aed; --biru:#3b82f6;
+  --teks:#eef2ff; --redup:#a5b4fc; --kaca:rgba(255,255,255,.08); --garis:rgba(255,255,255,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh; font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif; color:var(--teks);
+  background:radial-gradient(circle at 15% 10%,rgba(124,58,237,.45),transparent 45%),
+             radial-gradient(circle at 85% 90%,rgba(59,130,246,.40),transparent 45%),
+             linear-gradient(160deg,var(--navy),var(--navy2));
+  background-attachment:fixed; padding:24px 16px 48px;
+}
+.app{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.judul{text-align:center}
+.judul h1{font-size:clamp(1.7rem,5vw,2.6rem);letter-spacing:.5px}
+.judul p{color:var(--redup);margin-top:6px}
+
+.kartu{
+  background:var(--kaca); border:1px solid var(--garis); border-radius:24px; padding:22px;
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:0 12px 40px rgba(0,0,0,.28);
+}
+.kartu h2{font-size:1.1rem;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.badge{background:linear-gradient(135deg,var(--ungu),var(--biru));padding:2px 12px;border-radius:999px;font-size:.9rem}
+
+.utama{text-align:center}
+.statistik{display:flex;justify-content:center;gap:14px;margin-bottom:18px}
+.stat{flex:1;max-width:160px;background:rgba(0,0,0,.22);border-radius:16px;padding:10px}
+.stat .angka{display:block;font-size:1.9rem;font-weight:700}
+.stat .label{font-size:.85rem;color:var(--redup)}
+
+.layar{
+  position:relative; min-height:170px; display:flex;align-items:center;justify-content:center;
+  padding:20px; border-radius:20px; overflow:hidden;
+  background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(59,130,246,.30));
+  border:1px solid var(--garis);
+}
+.hasil{font-size:clamp(1.8rem,7vw,3.6rem);font-weight:800;line-height:1.15;word-break:break-word;overflow-wrap:anywhere;max-width:100%}
+.hasil.rolling{opacity:.85;filter:blur(.6px)}
+.hasil.muncul{animation:pop .7s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.confetti{position:absolute;top:-20px;font-size:1.4rem;pointer-events:none;animation:jatuh 1.6s ease-in forwards}
+@keyframes jatuh{to{transform:translateY(260px) rotate(360deg);opacity:0}}
+
+.pesan{margin:16px 0;min-height:1.5em;color:var(--redup)}
+.pesan.sukses{color:#86efac}
+.tombol-grup{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{
+  min-height:52px; padding:14px 26px; border:none; border-radius:16px; cursor:pointer;
+  font-size:1rem; font-weight:700; color:#fff; transition:transform .2s,box-shadow .2s,opacity .2s;
+  touch-action:manipulation;
+}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.btn-utama{background:linear-gradient(135deg,var(--ungu),var(--biru));box-shadow:0 8px 24px rgba(124,58,237,.45);flex:2 1 220px}
+.btn-reset{background:rgba(255,255,255,.12);border:1px solid var(--garis);flex:1 1 150px}
+
+.dua-kolom{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.daftar{list-style:none;max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
+ol.daftar{counter-reset:urut}
+.daftar li{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;
+  background:rgba(0,0,0,.22); word-break:break-word; overflow-wrap:anywhere;
+}
+.daftar .no{flex:0 0 auto;min-width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  font-size:.85rem;font-weight:700;background:linear-gradient(135deg,var(--ungu),var(--biru))}
+.daftar .kosong{justify-content:center;color:var(--redup);text-align:center}
+.daftar::-webkit-scrollbar{width:6px}
+.daftar::-webkit-scrollbar-thumb{background:var(--garis);border-radius:6px}
+
+@media (max-width:720px){.dua-kolom{grid-template-columns:1fr}.kartu{padding:18px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

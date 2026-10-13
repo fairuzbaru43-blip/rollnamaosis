@@ -131,9 +131,9 @@
     el.hasil.classList.add("muncul");
     confetti();
 
-    el.btnRolling.textContent = "🎲 ROLLING SEKARANG";
+    el.btnRolling.textContent = "ROLLING SEKARANG";
     if (tersedia.length === 0) {
-      setPesan("🎉 Selesai! Seluruh peserta sudah mendapatkan giliran.", true);
+      setPesan("Selesai! Seluruh peserta sudah mendapatkan giliran.", true);
     } else {
       setPesan("✅ Berhasil! " + nama + " terpilih.", true);
     }
@@ -149,7 +149,7 @@
     terpilih = [];
     el.hasil.classList.remove("rolling", "muncul");
     el.hasil.textContent = "Siap Rolling?";
-    el.btnRolling.textContent = "🎲 ROLLING SEKARANG";
+    el.btnRolling.textContent = "ROLLING SEKARANG";
     setPesan("Tekan tombol untuk memilih satu nama.", false);
     render();
   }

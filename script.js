@@ -86,7 +86,7 @@
   }
 
   function confetti() {
-    const ikon = ["🎉", "✨", "🎊", "⭐"];
+    const ikon = ["🤪", "🫣", "🤪", "😹"];
     for (let i = 0; i < 14; i++) {
       const s = document.createElement("span");
       s.className = "confetti";

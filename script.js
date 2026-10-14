@@ -1,21 +1,20 @@
-﻿(function () {
+(function () {
   "use strict";
 
   const semuaNama = [
-    "Naufal", "lya", "king bogell", "Elin", "King bogell", "Dilan rajin sholat",
+    "Naufal", "lya", "king bogell", "Elin", "Nazil", "Dilan rajin sholat",
     "Rijal kancell", "Egi", "Safira", "Nuri", "diyan", "Vian", "Rengga",
     "sipa", "Fairuz anak yang soleh", "pio", "Aulia w", "Kiranaaa", "Raditya"
   ];
   const semuaHari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
-  const tetapSenin = [];
-  const hariWajib = {
-    "king bogell": "Selasa",
-    "safira": "Selasa",
-    "dilan rajin sholat": "Rabu",
-    "pio": "Rabu",
-    "fairuz anak yang soleh": "Senin",
-    "ellin": "Senin"
-  };
+  // Nama dengan hari tetap; peserta lain diacak ke hari yang masih tersedia.
+  const hariTetap = new Map([
+    ["Fairuz anak yang soleh", "Senin"],
+    ["Elin", "Senin"],
+    ["diyan", "Senin"],
+    ["king bogell", "Selasa"],
+    ["Dilan rajin sholat", "Rabu"]
+  ]);
 
   let tersedia = [...semuaNama];
   let terpilih = []; // { nama, hari }
@@ -26,34 +25,29 @@
   let hariBaru = null;
   let kapasitas = buatKapasitas();
 
-  // 19 anak dibagi ke 5 hari dengan pola: 4 hari berisi 4 anak, 1 hari berisi 3 anak.
+  // Peserta dibagi rata ke lima hari (empat hari berisi 4, satu hari berisi 3).
   function buatKapasitas() {
-    const pola = [4, 4, 4, 4, 3];
     const hasil = {};
-
-    for (let i = pola.length - 1; i > 0; i--) {
+    const hari = [...semuaHari];
+    const dasar = Math.floor(semuaNama.length / hari.length);
+    const sisa = semuaNama.length % hari.length;
+    for (let i = hari.length - 1; i > 0; i--) {
       const j = acak(i + 1);
-      [pola[i], pola[j]] = [pola[j], pola[i]];
+      [hari[i], hari[j]] = [hari[j], hari[i]];
     }
-
-    semuaHari.forEach((hari, index) => {
-      hasil[hari] = pola[index];
-    });
-
+    hari.forEach((h, i) => { hasil[h] = dasar + (i < sisa ? 1 : 0); });
     return hasil;
   }
 
   function hariTersedia() {
-    return semuaHari.filter((h) => terpilih.filter((t) => t.hari === h).length < kapasitas[h]);
-  }
-
-  function pilihHari(nama, sisaHari) {
-    const namaNormal = nama.trim().toLowerCase();
-    const hariPilihan = hariWajib[namaNormal];
-    if (hariPilihan && sisaHari.includes(hariPilihan)) {
-      return hariPilihan;
-    }
-    return sisaHari[acak(sisaHari.length)];
+    const terpakai = {};
+    const cadangan = {};
+    terpilih.forEach((t) => { terpakai[t.hari] = (terpakai[t.hari] || 0) + 1; });
+    tersedia.forEach((nama) => {
+      const hari = hariTetap.get(nama);
+      if (hari) cadangan[hari] = (cadangan[hari] || 0) + 1;
+    });
+    return semuaHari.filter((h) => (terpakai[h] || 0) + (cadangan[h] || 0) < kapasitas[h]);
   }
 
   const DURASI = 3000;
@@ -61,28 +55,18 @@
 
   const $ = (id) => document.getElementById(id);
   const el = {
-    hasil: $("hasil"),
-    hariHasil: $("hariHasil"),
-    layar: $("layar"),
-    pesan: $("pesan"),
-    btnRolling: $("btnRolling"),
-    btnReset: $("btnReset"),
-    jumlahTersisa: $("jumlahTersisa"),
-    jumlahTerpilih: $("jumlahTerpilih"),
-    badgeTersisa: $("badgeTersisa"),
-    badgeRiwayat: $("badgeRiwayat"),
-    daftarTersedia: $("daftarTersedia"),
-    daftarRiwayat: $("daftarRiwayat"),
-    jadwal: $("jadwal")
+    hasil: $("hasil"), hariHasil: $("hariHasil"), layar: $("layar"), pesan: $("pesan"),
+    btnRolling: $("btnRolling"), btnReset: $("btnReset"),
+    jumlahTersisa: $("jumlahTersisa"), jumlahTerpilih: $("jumlahTerpilih"),
+    badgeTersisa: $("badgeTersisa"), badgeRiwayat: $("badgeRiwayat"),
+    daftarTersedia: $("daftarTersedia"), daftarRiwayat: $("daftarRiwayat"), jadwal: $("jadwal")
   };
 
   function acak(max) {
     if (window.crypto && crypto.getRandomValues) {
       const batas = Math.floor(4294967296 / max) * max;
       const buf = new Uint32Array(1);
-      do {
-        crypto.getRandomValues(buf);
-      } while (buf[0] >= batas);
+      do { crypto.getRandomValues(buf); } while (buf[0] >= batas);
       return buf[0] % max;
     }
     return Math.floor(Math.random() * max);
@@ -93,18 +77,15 @@
     const no = document.createElement("span");
     no.className = "no";
     no.textContent = nomor;
-
     const teks = document.createElement("span");
     teks.textContent = nama;
     li.append(no, teks);
-
     if (hari) {
       const tag = document.createElement("span");
       tag.className = "tag-hari";
       tag.textContent = hari;
       li.appendChild(tag);
     }
-
     return li;
   }
 
@@ -117,7 +98,6 @@
       ul.appendChild(li);
       return;
     }
-
     data.forEach((d, i) => {
       ul.appendChild(tampilHari ? buatItem(i + 1, d.nama, d.hari) : buatItem(i + 1, d));
     });
@@ -129,15 +109,12 @@
       const isi = terpilih.filter((t) => t.hari === hari);
       const kol = document.createElement("div");
       kol.className = "hari-kolom" + (hari === hariBaru ? " baru" : "");
-
       const judul = document.createElement("h3");
       judul.textContent = hari;
-
       const jml = document.createElement("span");
       jml.className = "badge";
       jml.textContent = isi.length + "/" + kapasitas[hari];
       judul.appendChild(jml);
-
       const ul = document.createElement("ul");
       if (isi.length === 0) {
         const li = document.createElement("li");
@@ -151,7 +128,6 @@
           ul.appendChild(li);
         });
       }
-
       kol.append(judul, ul);
       el.jadwal.appendChild(kol);
     });
@@ -161,23 +137,17 @@
     isiDaftar(el.daftarTersedia, tersedia, "Tidak ada peserta tersisa.", false);
     isiDaftar(el.daftarRiwayat, terpilih, "Belum ada nama terpilih.", true);
     renderJadwal();
-    el.jumlahTersisa.textContent = String(tersedia.length);
-    el.jumlahTerpilih.textContent = String(terpilih.length);
-    el.badgeTersisa.textContent = String(tersedia.length);
-    el.badgeRiwayat.textContent = String(terpilih.length);
+    el.jumlahTersisa.textContent = tersedia.length;
+    el.jumlahTerpilih.textContent = terpilih.length;
+    el.badgeTersisa.textContent = tersedia.length;
+    el.badgeRiwayat.textContent = terpilih.length;
     el.btnRolling.disabled = sedangRolling || tersedia.length === 0;
     el.daftarRiwayat.scrollTop = el.daftarRiwayat.scrollHeight;
   }
 
   function hentikanTimer() {
-    if (intervalId !== null) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId);
-      timeoutId = null;
-    }
+    if (intervalId !== null) { clearInterval(intervalId); intervalId = null; }
+    if (timeoutId !== null) { clearTimeout(timeoutId); timeoutId = null; }
   }
 
   function setPesan(teks, sukses) {
@@ -191,8 +161,8 @@
       const s = document.createElement("span");
       s.className = "confetti";
       s.textContent = ikon[i % ikon.length];
-      s.style.left = Math.random() * 95 + "%";
-      s.style.animationDelay = Math.random() * 0.4 + "s";
+      s.style.left = (Math.random() * 95) + "%";
+      s.style.animationDelay = (Math.random() * 0.4) + "s";
       el.layar.appendChild(s);
       setTimeout(() => s.remove(), 2200);
     }
@@ -200,11 +170,9 @@
 
   function mulaiRolling() {
     if (sedangRolling || tersedia.length === 0) return;
-
     sedangRolling = true;
     hariBaru = null;
     const sesiIni = ++sesi;
-
     el.btnRolling.disabled = true;
     el.btnRolling.textContent = "⏳ Mengacak...";
     el.hasil.classList.remove("muncul");
@@ -218,9 +186,7 @@
       if (sesiIni !== sesi || tersedia.length === 0) return;
       el.hasil.textContent = tersedia[acak(tersedia.length)];
       const pilihan = hariTersedia();
-      if (pilihan.length) {
-        el.hariHasil.textContent = "📅 " + pilihan[acak(pilihan.length)];
-      }
+      if (pilihan.length) el.hariHasil.textContent = "📅 " + pilihan[acak(pilihan.length)];
     }, KECEPATAN);
 
     timeoutId = setTimeout(() => selesaiRolling(sesiIni), DURASI);
@@ -228,17 +194,12 @@
 
   function selesaiRolling(sesiIni) {
     if (sesiIni !== sesi) return;
-
     hentikanTimer();
-    if (tersedia.length === 0) {
-      sedangRolling = false;
-      render();
-      return;
-    }
+    if (tersedia.length === 0) { sedangRolling = false; render(); return; }
 
     const [nama] = tersedia.splice(acak(tersedia.length), 1);
     const sisaHari = hariTersedia();
-    const hari = pilihHari(nama, sisaHari);
+    const hari = hariTetap.get(nama) || sisaHari[acak(sisaHari.length)];
     terpilih.push({ nama, hari });
     hariBaru = hari;
     sedangRolling = false;
@@ -251,7 +212,7 @@
     el.hariHasil.classList.add("muncul");
     confetti();
 
-    el.btnRolling.textContent = "ROLLING SEKARANG";
+    el.btnRolling.textContent = "🎲 ROLLING SEKARANG";
     if (tersedia.length === 0) {
       setPesan("🎉 Selesai! Seluruh peserta sudah mendapatkan giliran.", true);
     } else {
@@ -262,7 +223,6 @@
 
   function resetSemua() {
     if (!window.confirm("Reset semua? Riwayat dan jadwal akan dihapus.")) return;
-
     sesi++;
     hentikanTimer();
     sedangRolling = false;
@@ -270,7 +230,6 @@
     tersedia = [...semuaNama];
     terpilih = [];
     kapasitas = buatKapasitas();
-
     el.hasil.classList.remove("rolling", "muncul");
     el.hasil.textContent = "Siap Rolling?";
     el.hariHasil.hidden = true;

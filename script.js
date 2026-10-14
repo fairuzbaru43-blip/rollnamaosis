@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   "use strict";
 
   const semuaNama = [
@@ -9,10 +9,11 @@
   const semuaHari = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
   // Nama dengan hari tetap; peserta lain diacak ke hari yang masih tersedia.
   const hariTetap = new Map([
-    ["Fairuz anak yang soleh", "Senin"],
-    ["Elin", "Senin"],
-    ["diyan", "Senin"],
-    ["king bogell", "Selasa"],
+    ["Fairuz anak yang soleh", "Selasa"],
+    ["Kiranaaa", "Rabu"],
+    ["Elin", "Selasa"],
+    ["king bogell", "Senin"],
+    ["safira", "Selasa"],
     ["Dilan rajin sholat", "Rabu"]
   ]);
 
@@ -212,7 +213,7 @@
     el.hariHasil.classList.add("muncul");
     confetti();
 
-    el.btnRolling.textContent = "🎲 ROLLING SEKARANG";
+    el.btnRolling.textContent = "ROLLING SEKARANG";
     if (tersedia.length === 0) {
       setPesan("🎉 Selesai! Seluruh peserta sudah mendapatkan giliran.", true);
     } else {
